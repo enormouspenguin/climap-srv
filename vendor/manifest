@@ -1,0 +1,238 @@
+{
+	"version": 0,
+	"dependencies": [
+		{
+			"importpath": "github.com/coreos/go-systemd/journal",
+			"repository": "https://github.com/coreos/go-systemd",
+			"vcs": "git",
+			"revision": "c6f51f82210d9608a835763225a5e2a3c87583c6",
+			"branch": "master",
+			"path": "/journal",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/go-chi/chi",
+			"repository": "https://github.com/go-chi/chi",
+			"vcs": "git",
+			"revision": "235fa5d9ba51003bd4c40a69bb9e7c4d82a5ef39",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/go-stack/stack",
+			"repository": "https://github.com/go-stack/stack",
+			"vcs": "git",
+			"revision": "2fee6af1a9795aafbe0253a0cfbdf668e1fb8a9a",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/inconshreveable/log15",
+			"repository": "https://github.com/inconshreveable/log15",
+			"vcs": "git",
+			"revision": "67afb5ed74ec82fd7ac8f49d27c509ac6f991970",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/jackc/pgx",
+			"repository": "https://github.com/jackc/pgx",
+			"vcs": "git",
+			"revision": "20eaa7963b9d714bfaf678dcb2448fbd1e3671b9",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/konsorten/go-windows-terminal-sequences",
+			"repository": "https://github.com/konsorten/go-windows-terminal-sequences",
+			"vcs": "git",
+			"revision": "5c8c8bd35d3832f5d134ae1e1e375b69a4d25242",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/lib/pq",
+			"repository": "https://github.com/lib/pq",
+			"vcs": "git",
+			"revision": "4ded0e9383f75c197b3a2aaa6d590ac52df6fd79",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/mattn/go-colorable",
+			"repository": "https://github.com/mattn/go-colorable",
+			"vcs": "git",
+			"revision": "efa589957cd060542a26d2dd7832fd6a6c6c3ade",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/mattn/go-isatty",
+			"repository": "https://github.com/mattn/go-isatty",
+			"vcs": "git",
+			"revision": "3fb116b820352b7f0c281308a4d6250c22d94e27",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/pkg/errors",
+			"repository": "https://github.com/pkg/errors",
+			"vcs": "git",
+			"revision": "2233dee583dcf88f3c8b22cb7a33f05a499800d8",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/rs/xid",
+			"repository": "https://github.com/rs/xid",
+			"vcs": "git",
+			"revision": "15d26544def341f036c5f8dca987a4cbe575032c",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/rs/zerolog",
+			"repository": "https://github.com/rs/zerolog",
+			"vcs": "git",
+			"revision": "8e36cbf881d3eadd0c6455d55588af60c7cc4736",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/rwcarlsen/goexif",
+			"repository": "https://github.com/rwcarlsen/goexif",
+			"vcs": "git",
+			"revision": "8d986c03457a2057c7b0fb0a48113f7dd48f9619",
+			"branch": "go1",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/satori/go.uuid",
+			"repository": "https://github.com/satori/go.uuid",
+			"vcs": "git",
+			"revision": "36e9d2ebbde5e3f13ab2e25625fd453271d6522e",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/shopspring/decimal",
+			"repository": "https://github.com/shopspring/decimal",
+			"vcs": "git",
+			"revision": "cd690d0c9e2447b1ef2a129a6b7b49077da89b8e",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/sirupsen/logrus",
+			"repository": "https://github.com/sirupsen/logrus",
+			"vcs": "git",
+			"revision": "458213699411cdceb6fd839a3178be49c01fba54",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/zenazn/goji/web/mutil",
+			"repository": "https://github.com/zenazn/goji",
+			"vcs": "git",
+			"revision": "25de4dfca0cdc84eec486d5c0a89b8b2f140ce51",
+			"branch": "master",
+			"path": "/web/mutil",
+			"notests": true
+		},
+		{
+			"importpath": "go.uber.org/atomic",
+			"repository": "https://github.com/uber-go/atomic",
+			"vcs": "git",
+			"revision": "bb9a8edc0f888f7dcda2e967c3409846a9d8475c",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "go.uber.org/multierr",
+			"repository": "https://github.com/uber-go/multierr",
+			"vcs": "git",
+			"revision": "ddea229ff1dff9e6fe8a6c0344ac73b09e81fce5",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "go.uber.org/zap",
+			"repository": "https://github.com/uber-go/zap",
+			"vcs": "git",
+			"revision": "67bc79d13d155c02fd008f721863ff8cc5f30659",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "golang.org/x/crypto/ssh/terminal",
+			"repository": "https://go.googlesource.com/crypto",
+			"vcs": "git",
+			"revision": "a92615f3c49003920a58dedcf32cf55022cefb8d",
+			"branch": "master",
+			"path": "/ssh/terminal",
+			"notests": true
+		},
+		{
+			"importpath": "golang.org/x/sys/unix",
+			"repository": "https://go.googlesource.com/sys",
+			"vcs": "git",
+			"revision": "fa43e7bc11baaae89f3f902b2b4d832b68234844",
+			"branch": "master",
+			"path": "/unix",
+			"notests": true
+		},
+		{
+			"importpath": "golang.org/x/sys/windows",
+			"repository": "https://go.googlesource.com/sys",
+			"vcs": "git",
+			"revision": "fa43e7bc11baaae89f3f902b2b4d832b68234844",
+			"branch": "master",
+			"path": "windows",
+			"notests": true
+		},
+		{
+			"importpath": "golang.org/x/tools/go/ast/astutil",
+			"repository": "https://go.googlesource.com/tools",
+			"vcs": "git",
+			"revision": "c0eb142035b5aa4db001a5cc0703b55a8fbf9540",
+			"branch": "master",
+			"path": "go/ast/astutil",
+			"notests": true
+		},
+		{
+			"importpath": "golang.org/x/tools/go/buildutil",
+			"repository": "https://go.googlesource.com/tools",
+			"vcs": "git",
+			"revision": "c0eb142035b5aa4db001a5cc0703b55a8fbf9540",
+			"branch": "master",
+			"path": "go/buildutil",
+			"notests": true
+		},
+		{
+			"importpath": "golang.org/x/tools/go/internal/cgo",
+			"repository": "https://go.googlesource.com/tools",
+			"vcs": "git",
+			"revision": "c0eb142035b5aa4db001a5cc0703b55a8fbf9540",
+			"branch": "master",
+			"path": "go/internal/cgo",
+			"notests": true
+		},
+		{
+			"importpath": "golang.org/x/tools/go/loader",
+			"repository": "https://go.googlesource.com/tools",
+			"vcs": "git",
+			"revision": "c0eb142035b5aa4db001a5cc0703b55a8fbf9540",
+			"branch": "master",
+			"path": "/go/loader",
+			"notests": true
+		},
+		{
+			"importpath": "gopkg.in/inconshreveable/log15.v2",
+			"repository": "https://gopkg.in/inconshreveable/log15.v2",
+			"vcs": "git",
+			"revision": "67afb5ed74ec82fd7ac8f49d27c509ac6f991970",
+			"branch": "master",
+			"notests": true
+		}
+	]
+}
