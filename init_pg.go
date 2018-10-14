@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"github.com/jackc/pgx"
 	"time"
 )
 
 const (
+	DB     = "climap"
 	TB_IMG = "image"
 	TB_TAG = "tag"
 )
@@ -28,6 +30,13 @@ func init_pg() {
 		panic(err)
 	}
 
+	if ccfg.Database == "" {
+		ccfg.Database = DB
+		initDB(DB, ccfg)
+	} else {
+		initDB(ccfg.Database, ccfg)
+	}
+
 	c, err := pgx.Connect(ccfg)
 	if err != nil {
 		panic(err)
@@ -47,12 +56,23 @@ func init_pg() {
 	}
 }
 
+func initDB(DBname string, ccfg pgx.ConnConfig) {
+	ccfg.Database = ""
+
+	c, err := pgx.Connect(ccfg)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(c.Exec("CREATE DATABASE " + DBname + ";"))
+}
+
 func initTbImg(c *pgx.Conn) {
 	_, err := c.Exec(`
 CREATE TABLE IF NOT EXISTS ` + TB_IMG + ` (
 	id bigserial PRIMARY KEY,
 	loc point,
-	tag char(32) NOT NULL DEFAULT '',
+	tag varchar(32) NOT NULL DEFAULT '',
 	dsc varchar(512) NOT NULL DEFAULT '',
 	url varchar(2048) NOT NULL DEFAULT '',
 	hash char(40) UNIQUE NOT NULL DEFAULT '',
@@ -68,7 +88,7 @@ CREATE TABLE IF NOT EXISTS ` + TB_IMG + ` (
 func initTbTag(c *pgx.Conn) {
 	_, err := c.Exec(`
 CREATE TABLE IF NOT EXISTS ` + TB_TAG + ` (
-	tag char(32) PRIMARY KEY
+	tag varchar(32) PRIMARY KEY
 )
 	`)
 

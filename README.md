@@ -18,6 +18,12 @@ Climate map
 	go build
 ```
 
+Cross-compiling, targeting Linux on Windows:
+
+```cmd
+set "GOOS=linux" & set "GOARCH=amd64" & go build
+```
+
 # To run:
 For Linux:
 

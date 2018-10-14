@@ -41,7 +41,11 @@ func init_chi() {
 	rtr.Use(middleware.RedirectSlashes)
 
 	_PIC_URL_PATH := path.Join("/", _STATIC_SUBDIR_NM, _PIC_SUBDIR_NM)
-	rtr.Get(_PIC_URL_PATH, http.StripPrefix(_PIC_URL_PATH, http.FileServer(newDirFS(_PIC_PATH))).ServeHTTP)
+	// fmt.Println(_PIC_URL_PATH)
+	// fmt.Println(_PIC_PATH)
+	internalFS := newDirFS(_PIC_PATH)
+	// fmt.Println(internalFS.Open("/9a6e8f9c76c2adaa0dde68968e5eeee56f0db912"))
+	rtr.Get(_PIC_URL_PATH+"*", http.StripPrefix(_PIC_URL_PATH, http.FileServer(internalFS)).ServeHTTP)
 
 	rtr.Route("/api/", func(rtr chi.Router) {
 		rtr.Get("/search", Search)
@@ -124,44 +128,73 @@ func UploadImg(w http.ResponseWriter, r *http.Request) {
 	URL := r.FormValue("url")
 
 	var (
-		Hash     string
-		lat, lon float64
+		Loc  *Point
+		Hash string
 	)
 
-	if !chkImgURL(URL) {
+	if chkImgURL(URL) {
+		//go get the image (without storing locally) and calculate lat, lon and hash
+		resp, err := http.Get(URL)
+		defer resp.Body.Close()
+
+		Hash, Loc, err = saveImg(resp.Body, ioutil.Discard)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	} else {
 		img, _, err := r.FormFile("img")
+		defer img.Close()
+
 		if err != nil {
 			http.Error(w, "must supply image", http.StatusBadRequest)
 			return
 		}
 
-		dst, err := ioutil.TempFile(_PIC_PATH, "new*")
-
-		Hash, lat, lon, err = saveImg(img, dst)
+		dst, err := ioutil.TempFile(_PIC_PATH, "pending_")
 		if err != nil {
+			fmt.Println("Unable to create temp file:", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		err = os.Rename(dst.Name(), filepath.Join(_PIC_PATH, Hash))
+		Hash, Loc, err = saveImg(img, dst)
 		if err != nil {
-			os.Remove(dst.Name())
+			fmt.Println("Unable to save:", err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		dstName := dst.Name()
+		dst.Close()
+
+		err = os.Rename(dstName, filepath.Join(_PIC_PATH, Hash))
+		if err != nil {
+			fmt.Println("Unable to rename:", err)
+			fmt.Println("Removing the temp file:", os.Remove(dst.Name()))
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		URL = path.Join(_PIC_URL_PATH, Hash)
-	} else {
-		//go get the image, without storing it and then produce lat, lon and hash
-		resp, err := http.Get(URL)
-		defer resp.Body.Close()
+	}
 
-		Hash, lat, lon, err = saveImg(resp.Body, ioutil.Discard)
+	if Loc == nil { //image has no lat/lon information
+		Loc = &Point{}
+
+		strlon := r.FormValue("lon")
+		Loc.Lon, err = strconv.ParseFloat(strlon, 64)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "unable to extract longitude value from image and unexpected longitude fallback form value: "+strlon, http.StatusBadRequest)
 			return
 		}
 
+		strlat := r.FormValue("lat")
+		Loc.Lat, err = strconv.ParseFloat(strlat, 64)
+		if err != nil {
+			http.Error(w, "unable to extract longitude value from image and unexpected latitude fallback form value: "+strlat, http.StatusBadRequest)
+			return
+		}
 	}
 
 	var id int64
@@ -170,18 +203,54 @@ func UploadImg(w http.ResponseWriter, r *http.Request) {
 INSERT INTO `+TB_IMG+`(loc, tag, dsc, url, hash)
 VALUES (point($1, $2), $3, $4, $5, $6)
 RETURNING id;`,
-		lon, lat, Tag, Dsc, URL, Hash).Scan(&id)
+		Loc.Lon, Loc.Lat, Tag, Dsc, URL, Hash).Scan(&id)
 	if err != nil {
 		os.Remove(filepath.Join(_PIC_PATH, Hash))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	cpool.Exec(`
+	fmt.Println(cpool.Exec(`
 		INSERT INTO `+TB_TAG+` (tag)
-		VALUES $1;`, Tag)
+		VALUES ($1);`, Tag))
 
 	w.Write([]byte(strconv.Itoa(int(id))))
+}
+
+func chkImgURL(URL string) bool {
+	_, err := url.ParseRequestURI(URL)
+	return err == nil
+}
+
+func saveImg(img io.Reader, dst io.Writer) (hash string, p *Point, err error) {
+	hashWrt := sha1.New()
+
+	img = io.TeeReader(img, io.MultiWriter(dst, hashWrt))
+
+	exifInfo, err := exif.Decode(img)
+	if err != nil {
+		return
+	}
+
+	_, err = io.Copy(ioutil.Discard, img)
+	if err != nil {
+		return
+	}
+
+	hash = hex.EncodeToString(hashWrt.Sum(nil))
+
+	lat, lon, err := exifInfo.LatLong()
+	if err == nil {
+		p = &Point{
+			Lat: lat,
+			Lon: lon,
+		}
+	} else { //err != nil
+		//ignore EXIF error
+		err = nil
+	}
+
+	return
 }
 
 type Point struct {
@@ -234,38 +303,11 @@ func GetImg(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func chkImgURL(URL string) bool {
-	_, err := url.ParseRequestURI(URL)
-	return err == nil
-}
-
-func saveImg(img io.Reader, dst io.Writer) (hash string, lat float64, lon float64, err error) {
-	hashWrt := sha1.New()
-
-	img = io.TeeReader(img, io.MultiWriter(dst, hashWrt))
-
-	exifInfo, err := exif.Decode(img)
-	if err != nil {
-		return
-	}
-
-	lat, lon, err = exifInfo.LatLong()
-	if err != nil {
-		return
-	}
-
-	_, err = io.Copy(ioutil.Discard, img)
-	if err != nil {
-		return
-	}
-
-	hash = hex.EncodeToString(hashWrt.Sum(nil))
-	return
-}
-
 //SELECT loc, tag, dsc, url, hash, added_at
 func toObjs(rows *pgx.Rows, r *http.Request) (imgs []Img, err error) {
 	defer rows.Close()
+
+	imgs = []Img{} //encode to JSON "[]" instead of "null"
 
 	var (
 		img    Img
@@ -297,7 +339,7 @@ func ListAllTags(w http.ResponseWriter, r *http.Request) {
 
 	tag := ""
 
-	var tags []string
+	tags := []string{} //encode to JSON "[]" instead of "null"
 
 	for rows.Next() {
 		err = rows.Scan(tag)

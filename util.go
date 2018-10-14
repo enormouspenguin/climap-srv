@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 )
@@ -14,6 +15,7 @@ type noDirListingFS struct {
 }
 
 func (fs noDirListingFS) Open(name string) (http.File, error) {
+	fmt.Println(name)
 	f, err := fs.fs.Open(name)
 	if err != nil {
 		return nil, err

@@ -40,7 +40,13 @@ func init() {
 
 	err = os.MkdirAll(_STATIC_PATH, fi.Mode())
 	if err != nil {
-		fmt.Println("UNABLE to create static dir \"" + _STATIC_PATH + "\"!!! See more below:")
+		fmt.Println("UNABLE to create dir \"" + _STATIC_PATH + "\"!!! See more below:")
+		panic(err)
+	}
+
+	err = os.MkdirAll(_PIC_PATH, fi.Mode())
+	if err != nil {
+		fmt.Println("UNABLE to create dir \"" + _PIC_PATH + "\"!!! See more below:")
 		panic(err)
 	}
 

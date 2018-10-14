@@ -14,6 +14,6 @@ func main() {
 		listenSocket = "localhost:9999"
 	}
 
-	fmt.Println("listening to ", listenSocket, "...")
+	fmt.Println("listening to", listenSocket, "...")
 	fmt.Println(http.ListenAndServe(listenSocket, rtr))
 }
