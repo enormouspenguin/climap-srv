@@ -186,7 +186,7 @@ func UploadImg(w http.ResponseWriter, r *http.Request) {
 		err = os.Rename(dstName, filepath.Join(_PIC_PATH, Hash))
 		if err != nil {
 			fmt.Println("Unable to rename:", err)
-			fmt.Println("Removing the temp file:", os.Remove(dst.Name()))
+			fmt.Println("Removing the temp file:", os.Remove(dstName))
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -220,7 +220,7 @@ VALUES (point($1, $2), $3, $4, $5, $6)
 RETURNING id;`,
 		Loc.Lon, Loc.Lat, Tag, Dsc, URL, Hash).Scan(&id)
 	if err != nil {
-		os.Remove(filepath.Join(_PIC_PATH, Hash))
+		// os.Remove(filepath.Join(_PIC_PATH, Hash))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -304,8 +304,7 @@ func GetImg(w http.ResponseWriter, r *http.Request) {
 	img.Loc.Lat = PgxPnt.P.Y
 
 	if !strings.HasPrefix(img.URL, "http") {
-		fmt.Println(r.URL.RequestURI())
-		img.URL = r.URL.Scheme + "://" + r.Host + img.URL
+		img.URL = "http://" + r.Host + img.URL
 	}
 
 	encoder := json.NewEncoder(w)
@@ -340,7 +339,7 @@ func toObjs(rows *pgx.Rows, r *http.Request) (imgs []Img, err error) {
 		img.Loc.Lat = PgxPnt.P.Y
 
 		if !strings.HasPrefix(img.URL, "http") {
-			img.URL = r.URL.Scheme + "://" + r.Host + img.URL
+			img.URL = "http://" + r.Host + img.URL
 		}
 
 		imgs = append(imgs, img)
