@@ -19,6 +19,14 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/go-chi/cors",
+			"repository": "https://github.com/go-chi/cors",
+			"vcs": "git",
+			"revision": "07727c846d14299758e54a275dd8c81353c01960",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/go-stack/stack",
 			"repository": "https://github.com/go-stack/stack",
 			"vcs": "git",
