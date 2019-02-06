@@ -152,6 +152,8 @@ func UploadImg(w http.ResponseWriter, r *http.Request) {
 		resp, err := http.Get(URL)
 		defer resp.Body.Close()
 
+		fmt.Println(resp.Header)
+
 		Hash, Loc, err = saveImg(resp.Body, ioutil.Discard)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -244,6 +246,7 @@ func saveImg(img io.Reader, dst io.Writer) (hash string, p *Point, err error) {
 
 	exifInfo, err := exif.Decode(img)
 	if err != nil {
+		// fmt.Println(err)
 		return
 	}
 
